@@ -50,9 +50,6 @@ export namespace Card {
         e.preventDefault()
         e.stopPropagation()
         switch (e.button) {
-            case 1:
-                openInBrowser(props, e)
-                break
             case 2:
                 props.contextMenu(props.feedId, props.item, e)
         }
