@@ -10,20 +10,20 @@ jobs:
         runs-on: windows-latest
 
         steps:
-            - uses: actions/checkout@v4 # 建议升级到 v4
+            - uses: actions/checkout@v4
 
-            # 新增步骤：设置 Node.js 环境并开启缓存
+            # 设置 Node.js 环境并开启 Yarn 缓存
             - name: Set up Node.js
-              uses: actions/setup-node@v4 # 建议升级到 v4
+              uses: actions/setup-node@v4
               with:
-                node-version: '22' # 请指定您的项目所需的 Node.js 版本
-                cache: 'yarn' # 开启 npm 缓存
+                node-version: '22'
+                cache: 'yarn' # 确保这里是 'yarn'
 
-            - name: Build and package the app
+            - name: Install dependencies and build app # 修改步骤名称以反映使用 Yarn
               run: |
-                  npm install
-                  npm run build
-                  npm run package-win-ci
+                  yarn install
+                  yarn run build
+                  yarn run package-win-ci
 
             - name: Get app version
               id: package-version
