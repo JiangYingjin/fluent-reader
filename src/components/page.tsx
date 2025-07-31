@@ -56,20 +56,6 @@ class Page extends React.Component<PageProps> {
                             onClick={e => e.stopPropagation()}>
                             <ArticleContainer itemId={this.props.itemId} />
                         </div>
-                        {this.props.itemFromFeed && (
-                            <>
-                                <div className="btn-group prev">
-                                    <a className="btn" onClick={this.prevItem}>
-                                        <Icon iconName="Back" />
-                                    </a>
-                                </div>
-                                <div className="btn-group next">
-                                    <a className="btn" onClick={this.nextItem}>
-                                        <Icon iconName="Forward" />
-                                    </a>
-                                </div>
-                            </>
-                        )}
                     </FocusTrapZone>
                 )}
             </>

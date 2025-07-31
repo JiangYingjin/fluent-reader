@@ -217,22 +217,18 @@ class Article extends React.Component<ArticleProps, ArticleState> {
                 case "Escape":
                     this.props.dismiss()
                     break
-                case "ArrowLeft":
-                case "ArrowRight":
-                    this.props.offsetItem(input.key === "ArrowLeft" ? -1 : 1)
-                    break
-                case "l":
-                case "L":
-                    this.toggleWebpage()
-                    break
-                case "w":
-                case "W":
-                    this.toggleFull()
-                    break
-                case "H":
-                case "h":
-                    if (!input.meta) this.props.toggleHidden(this.props.item)
-                    break
+                // case "ArrowLeft":
+                // case "ArrowRight":
+                //     this.props.offsetItem(input.key === "ArrowLeft" ? -1 : 1)
+                //     break
+                // case "w":
+                // case "W":
+                //     this.toggleFull()
+                //     break
+                // case "H":
+                // case "h":
+                //     if (!input.meta) this.props.toggleHidden(this.props.item)
+                //     break
                 default:
                     const keyboardEvent = new KeyboardEvent("keydown", {
                         code: input.code,
