@@ -17,7 +17,7 @@ jobs:
               uses: actions/setup-node@v4 # 建议升级到 v4
               with:
                 node-version: '22' # 请指定您的项目所需的 Node.js 版本
-                cache: 'npm' # 开启 npm 缓存
+                cache: 'yarn' # 开启 npm 缓存
 
             - name: Build and package the app
               run: |
