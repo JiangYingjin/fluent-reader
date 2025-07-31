@@ -1,7 +1,7 @@
 import * as React from "react"
 import intl from "react-intl-universal"
 import { Icon } from "@fluentui/react/lib/Icon"
-import { Nav, INavLink, INavLinkGroup } from "office-ui-fabric-react/lib/Nav"
+import { Nav, INavLink, INavLinkGroup } from "@fluentui/react/lib/Nav"
 import { SourceGroup } from "../schema-types"
 import { SourceState, RSSSource } from "../scripts/models/source"
 import { ALL } from "../scripts/models/feed"
@@ -121,7 +121,7 @@ export class Menu extends React.Component<MenuProps> {
         this.props.groupContextMenu(sids, event)
     }
 
-    _onRenderLink = (link: INavLink): JSX.Element => {
+    _onRenderLink = (link: INavLink) => {
         let count = link.ariaLabel.split(" ").pop()
         return (
             <Stack
@@ -137,7 +137,7 @@ export class Menu extends React.Component<MenuProps> {
         )
     }
 
-    _onRenderGroupHeader = (group: INavLinkGroup): JSX.Element => {
+    _onRenderGroupHeader = (group: INavLinkGroup) => {
         return (
             <p className={"subs-header " + AnimationClassNames.slideDownIn10}>
                 {group.name}
