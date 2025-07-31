@@ -4,17 +4,17 @@ import { RSSSource } from "../../scripts/models/source"
 import { RSSItem } from "../../scripts/models/item"
 
 type CardInfoProps = {
-    source: RSSSource
     item: RSSItem
+    source: RSSSource
     hideTime?: boolean
     showCreator?: boolean
 }
 
 const CardInfo: React.FunctionComponent<CardInfoProps> = props => (
     <p className="info">
-        {props.source.iconurl ? <img src={props.source.iconurl} /> : null}
+        {/* {props.source.iconurl ? <img src={props.source.iconurl} /> : null} */}
         <span className="name">
-            {props.source.name}
+            {props.item.creator || props.source.name}
             {props.showCreator && props.item.creator && (
                 <span className="creator">{props.item.creator}</span>
             )}
