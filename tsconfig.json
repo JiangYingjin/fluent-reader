@@ -5,6 +5,7 @@
     "esModuleInterop": true,
     "target": "ES2019",
     "module": "CommonJS",
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "types": ["node"]
   }
 }
