@@ -83,7 +83,7 @@ export class AppState {
     fetchingProgress = 0
     fetchingTotal = 0
     lastFetched = new Date()
-    menu = getWindowBreakpoint() && window.settings.getDefaultMenu()
+    menu = false // 将在 initApp 中正确初始化
     menuKey = ALL
     title = ""
     settings = {
@@ -191,9 +191,10 @@ interface PushNotificationAction {
 export type LogMenuActionType = ToggleLogMenuAction | PushNotificationAction
 
 export const TOGGLE_MENU = "TOGGLE_MENU"
+export const INIT_MENU = "INIT_MENU"
 
 export interface MenuActionTypes {
-    type: typeof TOGGLE_MENU
+    type: typeof TOGGLE_MENU | typeof INIT_MENU
     [key: string]: any
 }
 
@@ -409,6 +410,7 @@ export function initIntl(): AppThunk<Promise<void>> {
 export function initApp(): AppThunk {
     return dispatch => {
         document.body.classList.add(window.utils.platform)
+        dispatch({ type: INIT_MENU }) // 初始化菜单状态
         dispatch(initIntl())
             .then(async () => {
                 if (window.utils.platform === "darwin") initTouchBarWithTexts()
@@ -673,6 +675,11 @@ export function appReducer(
             return {
                 ...state,
                 menu: !state.menu,
+            }
+        case INIT_MENU:
+            return {
+                ...state,
+                menu: getWindowBreakpoint() && window.settings.getDefaultMenu(),
             }
         case SAVE_SETTINGS:
             return {

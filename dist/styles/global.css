@@ -190,7 +190,7 @@ nav .progress {
     font-size: 12px;
     line-height: var(--navHeight);
     vertical-align: top;
-    letter-spacing: 2px;
+    /* letter-spacing: 2px; */
     margin: 0 4px;
     display: inline-block;
     max-width: 280px;

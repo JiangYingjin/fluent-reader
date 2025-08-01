@@ -1,5 +1,6 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin")
 const NodePolyfillPlugin = require("node-polyfill-webpack-plugin")
+const webpack = require("webpack")
 
 module.exports = [
     {
@@ -74,9 +75,19 @@ module.exports = [
         },
         plugins: [
             new NodePolyfillPlugin(),
+            new webpack.DefinePlugin({
+                'process.env': JSON.stringify(process.env),
+                'process.platform': JSON.stringify(process.platform),
+                'process.version': JSON.stringify(process.version),
+            }),
             new HtmlWebpackPlugin({
                 template: "./src/index.html",
             }),
         ],
+        resolve: {
+            fallback: {
+                "process": require.resolve("process/browser"),
+            }
+        },
     },
 ]
