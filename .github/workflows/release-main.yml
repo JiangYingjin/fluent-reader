@@ -12,14 +12,7 @@ jobs:
         steps:
             - uses: actions/checkout@v4
 
-            # # 设置 Node.js 环境并开启 Yarn 缓存
-            # - name: Set up Node.js
-            #   uses: actions/setup-node@v4
-            #   with:
-            #     node-version: '22'
-            #     cache: 'yarn' # 确保这里是 'yarn'
-
-            - name: Install dependencies and build app # 修改步骤名称以反映使用 Yarn
+            - name: Install dependencies and build app
               run: |
                   yarn install
                   yarn run build
@@ -28,57 +21,32 @@ jobs:
             - name: Get app version
               id: package-version
               run: |
-                  PACKAGE_VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g' | tr -d '[[:space:]]')
-                  echo "current-version=$PACKAGE_VERSION" >> $GITHUB_OUTPUT
-              shell: bash
+                  $packageVersion = (Get-Content package.json | ConvertFrom-Json).version
+                  echo "current-version=$packageVersion" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+              # 使用 PowerShell 会更稳定，特别是在 Windows 上
+              shell: pwsh
 
-            - name: Create release
-              id: create_release
-              uses: actions/create-release@v1
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            - name: Rename assets for release
+              id: rename-assets
+              run: |
+                  $ver = "${{ steps.package-version.outputs.current-version }}"
+                  ren "./bin/win32/x64/Fluent Reader Setup $ver.exe" "Fluent.Reader.Setup.$ver.x64.exe"
+              shell: cmd
+
+            - name: Create Release and Upload Assets
+              uses: softprops/action-gh-release@v2
               with:
-                  tag_name: ${{ github.ref }}
-                  release_name: Fluent Reader v${{ steps.package-version.outputs.current-version }}
+                  # 这个 Action 会自动使用 GITHUB_TOKEN，但显式声明也没问题
+                  # token: ${{ secrets.GITHUB_TOKEN }}
+
+                  # 发布版本名称
+                  name: Fluent Reader v${{ steps.package-version.outputs.current-version }}
+
+                  # 和之前一样，创建为草稿
                   draft: true
                   prerelease: false
 
-            - name: Upload x64 exe to release assets
-              uses: actions/upload-release-asset@v1
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              with:
-                  upload_url: ${{ steps.create_release.outputs.upload_url }}
-                  asset_path: ./bin/win32/x64/Fluent Reader Setup ${{ steps.package-version.outputs.current-version }}.exe
-                  asset_name: Fluent.Reader.Setup.${{ steps.package-version.outputs.current-version }}.x64.exe
-                  asset_content_type: application/vnd.microsoft.portable-executable
-
-            - name: Upload x86 exe to release assets
-              uses: actions/upload-release-asset@v1
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              with:
-                  upload_url: ${{ steps.create_release.outputs.upload_url }}
-                  asset_path: ./bin/win32/ia32/Fluent Reader Setup ${{ steps.package-version.outputs.current-version }}.exe
-                  asset_name: Fluent.Reader.Setup.${{ steps.package-version.outputs.current-version }}.x86.exe
-                  asset_content_type: application/vnd.microsoft.portable-executable
-
-            - name: Upload x64 zip to release assets
-              uses: actions/upload-release-asset@v1
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              with:
-                  upload_url: ${{ steps.create_release.outputs.upload_url }}
-                  asset_path: ./bin/win32/x64/Fluent Reader-${{ steps.package-version.outputs.current-version }}-win.zip
-                  asset_name: Fluent.Reader.Unpacked.${{ steps.package-version.outputs.current-version }}.x64.zip
-                  asset_content_type: application/zip
-
-            - name: Upload x86 zip to release assets
-              uses: actions/upload-release-asset@v1
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              with:
-                  upload_url: ${{ steps.create_release.outputs.upload_url }}
-                  asset_path: ./bin/win32/ia32/Fluent Reader-${{ steps.package-version.outputs.current-version }}-ia32-win.zip
-                  asset_name: Fluent.Reader.Unpacked.${{ steps.package-version.outputs.current-version }}.x86.zip
-                  asset_content_type: application/zip
+                  # 使用多行字符串列出所有要上传的文件
+                  # 这里的文件名是上一步重命名后的新名字
+                  files: |
+                      ./bin/win32/x64/Fluent.Reader.Setup.${{ steps.package-version.outputs.current-version }}.x64.exe
