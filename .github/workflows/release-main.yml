@@ -15,8 +15,8 @@ jobs:
             - name: Install dependencies and build app
               run: |
                   yarn install
-                  yarn run build
-                  yarn run package-win-ci
+                  yarn build
+                  yarn package
 
             - name: Get app version
               id: package-version

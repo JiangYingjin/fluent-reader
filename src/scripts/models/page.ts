@@ -117,10 +117,15 @@ export function selectSources(
     }
 }
 
-export function switchView(viewType: ViewType): PageActionTypes {
-    return {
-        type: SWITCH_VIEW,
-        viewType: viewType,
+export function switchView(viewType: ViewType): AppThunk {
+    return (dispatch, getState) => {
+        // 保存视图选择到默认设置
+        window.settings.setDefaultView(viewType)
+        // 分发视图切换action
+        dispatch({
+            type: SWITCH_VIEW,
+            viewType: viewType,
+        } as PageActionTypes)
     }
 }
 
