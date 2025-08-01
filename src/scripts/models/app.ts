@@ -64,7 +64,7 @@ export class AppLog {
         type: AppLogType,
         title: string,
         details: string = null,
-        iid: number = null
+        iid: number = null,
     ) {
         this.type = type
         this.title = title
@@ -122,6 +122,7 @@ export const OPEN_MARK_ALL_MENU = "OPEN_MARK_ALL_MENU"
 
 interface CloseContextMenuAction {
     type: typeof CLOSE_CONTEXT_MENU
+    [key: string]: any
 }
 
 interface OpenItemMenuAction {
@@ -129,31 +130,37 @@ interface OpenItemMenuAction {
     event: MouseEvent
     item: RSSItem
     feedId: string
+    [key: string]: any
 }
 
 interface OpenTextMenuAction {
     type: typeof OPEN_TEXT_MENU
     position: [number, number]
     item: [string, string]
+    [key: string]: any
 }
 
 interface OpenViewMenuAction {
     type: typeof OPEN_VIEW_MENU
+    [key: string]: any
 }
 
 interface OpenMarkAllMenuAction {
     type: typeof OPEN_MARK_ALL_MENU
+    [key: string]: any
 }
 
 interface OpenGroupMenuAction {
     type: typeof OPEN_GROUP_MENU
     event: MouseEvent
     sids: number[]
+    [key: string]: any
 }
 
 interface OpenImageMenuAction {
     type: typeof OPEN_IMAGE_MENU
     position: [number, number]
+    [key: string]: any
 }
 
 export type ContextMenuActionTypes =
@@ -170,6 +177,7 @@ export const PUSH_NOTIFICATION = "PUSH_NOTIFICATION"
 
 interface ToggleLogMenuAction {
     type: typeof TOGGLE_LOGS
+    [key: string]: any
 }
 
 interface PushNotificationAction {
@@ -177,6 +185,7 @@ interface PushNotificationAction {
     iid: number
     title: string
     source: string
+    [key: string]: any
 }
 
 export type LogMenuActionType = ToggleLogMenuAction | PushNotificationAction
@@ -185,6 +194,7 @@ export const TOGGLE_MENU = "TOGGLE_MENU"
 
 export interface MenuActionTypes {
     type: typeof TOGGLE_MENU
+    [key: string]: any
 }
 
 export const TOGGLE_SETTINGS = "TOGGLE_SETTINGS"
@@ -195,13 +205,15 @@ interface ToggleSettingsAction {
     type: typeof TOGGLE_SETTINGS
     open: boolean
     sids: number[]
+    [key: string]: any
 }
 interface SaveSettingsAction {
     type: typeof SAVE_SETTINGS
+    [key: string]: any
 }
 interface FreeMemoryAction {
     type: typeof FREE_MEMORY
-    iids: Set<number>
+    [key: string]: any
 }
 export type SettingsActionTypes =
     | ToggleSettingsAction
@@ -219,7 +231,7 @@ export function closeContextMenu(): AppThunk {
 export function openItemMenu(
     item: RSSItem,
     feedId: string,
-    event: React.MouseEvent
+    event: React.MouseEvent,
 ): ContextMenuActionTypes {
     return {
         type: OPEN_ITEM_MENU,
@@ -232,7 +244,7 @@ export function openItemMenu(
 export function openTextMenu(
     position: [number, number],
     text: string,
-    url: string = null
+    url: string = null,
 ): ContextMenuActionTypes {
     return {
         type: OPEN_TEXT_MENU,
@@ -247,7 +259,7 @@ export const openViewMenu = (): ContextMenuActionTypes => ({
 
 export function openGroupMenu(
     sids: number[],
-    event: React.MouseEvent
+    event: React.MouseEvent,
 ): ContextMenuActionTypes {
     return {
         type: OPEN_GROUP_MENU,
@@ -257,7 +269,7 @@ export function openGroupMenu(
 }
 
 export function openImageMenu(
-    position: [number, number]
+    position: [number, number],
 ): ContextMenuActionTypes {
     return {
         type: OPEN_IMAGE_MENU,
@@ -368,6 +380,7 @@ export const INIT_INTL = "INIT_INTL"
 export interface InitIntlAction {
     type: typeof INIT_INTL
     locale: string
+    [key: string]: any
 }
 export const initIntlDone = (locale: string): InitIntlAction => {
     document.documentElement.lang = locale
@@ -425,7 +438,7 @@ export function appReducer(
         | FeedActionTypes
         | PageActionTypes
         | SourceGroupActionTypes
-        | ServiceActionTypes
+        | ServiceActionTypes,
 ): AppState {
     switch (action.type) {
         case INIT_INTL:
@@ -508,7 +521,7 @@ export function appReducer(
                                 new AppLog(
                                     AppLogType.Failure,
                                     intl.get("log.syncFailure"),
-                                    String(action.err)
+                                    String(action.err),
                                 ),
                             ],
                         },
@@ -541,7 +554,7 @@ export function appReducer(
                                     intl.get("log.fetchFailure", {
                                         name: action.errSource.name,
                                     }),
-                                    String(action.err)
+                                    String(action.err),
                                 ),
                             ],
                         },
@@ -562,7 +575,7 @@ export function appReducer(
                                               AppLogType.Info,
                                               intl.get("log.fetchSuccess", {
                                                   count: action.items.length,
-                                              })
+                                              }),
                                           ),
                                       ],
                                   },
@@ -702,7 +715,7 @@ export function appReducer(
                             AppLogType.Article,
                             action.title,
                             action.source,
-                            action.iid
+                            action.iid,
                         ),
                     ],
                 },

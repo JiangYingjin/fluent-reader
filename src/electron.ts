@@ -18,8 +18,8 @@ else if (process.platform === "win32")
 let restarting = false
 
 function init() {
-    performUpdate(store)
-    nativeTheme.themeSource = store.get("theme", ThemeSettings.Default)
+    performUpdate(store as any)
+    nativeTheme.themeSource = (store as any).get("theme", ThemeSettings.Default)
 }
 
 init()
@@ -40,7 +40,8 @@ if (process.platform === "darwin") {
                     label: "Quit",
                     accelerator: "Command+Q",
                     click: () => {
-                        if (winManager.hasWindow) winManager.mainWindow.close()
+                        if (winManager.hasWindow())
+                            winManager.mainWindow.close()
                     },
                 },
             ],
@@ -83,7 +84,8 @@ if (process.platform === "darwin") {
                     label: "Close",
                     accelerator: "Command+W",
                     click: () => {
-                        if (winManager.hasWindow) winManager.mainWindow.close()
+                        if (winManager.hasWindow())
+                            winManager.mainWindow.close()
                     },
                 },
                 {
@@ -122,17 +124,17 @@ app.on("window-all-closed", () => {
 
 ipcMain.handle("import-all-settings", (_, configs: SchemaTypes) => {
     restarting = true
-    store.clear()
+    ;(store as any).clear()
     for (let [key, value] of Object.entries(configs)) {
         // @ts-ignore
-        store.set(key, value)
+        ;(store as any).set(key, value)
     }
-    performUpdate(store)
-    nativeTheme.themeSource = store.get("theme", ThemeSettings.Default)
+    performUpdate(store as any)
+    nativeTheme.themeSource = (store as any).get("theme", ThemeSettings.Default)
     setTimeout(
         () => {
             winManager.mainWindow.close()
         },
-        process.platform === "darwin" ? 1000 : 0
+        process.platform === "darwin" ? 1000 : 0,
     ) // Why ???
 })

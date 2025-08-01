@@ -1,4 +1,4 @@
-import Store = require("electron-store")
+import ElectronStore from "electron-store"
 import {
     SchemaTypes,
     SourceGroup,
@@ -12,7 +12,7 @@ import {
 import { ipcMain, session, nativeTheme, app } from "electron"
 import { WindowManager } from "./window"
 
-export const store = new Store<SchemaTypes>()
+export const store = new ElectronStore<SchemaTypes>() as any
 
 const GROUPS_STORE_KEY = "sourceGroups"
 ipcMain.handle("set-groups", (_, groups: SourceGroup[]) => {
@@ -178,7 +178,7 @@ ipcMain.on("get-view-configs", (event, view: ViewType) => {
         case ViewType.List:
             event.returnValue = store.get(
                 LIST_CONFIGS_STORE_KEY,
-                ViewConfigs.ShowCover
+                ViewConfigs.ShowCover,
             )
             break
         default:
@@ -194,7 +194,7 @@ ipcMain.handle(
                 store.set(LIST_CONFIGS_STORE_KEY, configs)
                 break
         }
-    }
+    },
 )
 
 const NEDB_STATUS_STORE_KEY = "useNeDB"

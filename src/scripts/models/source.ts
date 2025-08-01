@@ -69,7 +69,7 @@ export class RSSSource {
 
     private static async checkItem(
         source: RSSSource,
-        item: MyParserItem
+        item: MyParserItem,
     ): Promise<RSSItem> {
         let i = new RSSItem(item, source)
         const items = (await db.itemsDB
@@ -79,8 +79,8 @@ export class RSSSource {
                 lf.op.and(
                     db.items.source.eq(i.source),
                     db.items.title.eq(i.title),
-                    db.items.date.eq(i.date)
-                )
+                    db.items.date.eq(i.date),
+                ),
             )
             .limit(1)
             .exec()) as RSSItem[]
@@ -95,7 +95,7 @@ export class RSSSource {
 
     static checkItems(
         source: RSSSource,
-        items: MyParserItem[]
+        items: MyParserItem[],
     ): Promise<RSSItem[]> {
         return new Promise<RSSItem[]>((resolve, reject) => {
             let p = new Array<Promise<RSSItem>>()
@@ -135,6 +135,7 @@ interface InitSourcesAction {
     status: ActionStatus
     sources?: SourceState
     err?
+    [key: string]: any
 }
 
 interface AddSourceAction {
@@ -143,27 +144,32 @@ interface AddSourceAction {
     batch: boolean
     source?: RSSSource
     err?
+    [key: string]: any
 }
 
 interface UpdateSourceAction {
     type: typeof UPDATE_SOURCE
     source: RSSSource
+    [key: string]: any
 }
 
 interface UpdateUnreadCountsAction {
     type: typeof UPDATE_UNREAD_COUNTS
     sources: SourceState
+    [key: string]: any
 }
 
 interface DeleteSourceAction {
     type: typeof DELETE_SOURCE
     source: RSSSource
+    [key: string]: any
 }
 
 interface ToggleSourceHiddenAction {
     type: typeof HIDE_SOURCE | typeof UNHIDE_SOURCE
     status: ActionStatus
     source: RSSSource
+    [key: string]: any
 }
 
 export type SourceActionTypes =
@@ -255,7 +261,7 @@ export function addSourceRequest(batch: boolean): SourceActionTypes {
 
 export function addSourceSuccess(
     source: RSSSource,
-    batch: boolean
+    batch: boolean,
 ): SourceActionTypes {
     return {
         type: ADD_SOURCE,
@@ -301,7 +307,7 @@ export function insertSource(source: RSSSource): AppThunk<Promise<RSSSource>> {
 export function addSource(
     url: string,
     name: string = null,
-    batch = false
+    batch = false,
 ): AppThunk<Promise<number>> {
     return async (dispatch, getState) => {
         const app = getState().app
@@ -324,7 +330,7 @@ export function addSource(
                     window.utils.showErrorBox(
                         intl.get("sources.errorAdd"),
                         String(e),
-                        intl.get("context.copy")
+                        intl.get("context.copy"),
                     )
                 }
                 throw e
@@ -364,7 +370,7 @@ export function deleteSourceDone(source: RSSSource): SourceActionTypes {
 
 export function deleteSource(
     source: RSSSource,
-    batch = false
+    batch = false,
 ): AppThunk<Promise<void>> {
     return async (dispatch, getState) => {
         if (!batch) dispatch(saveSettings())
@@ -414,7 +420,7 @@ export function toggleSourceHidden(source: RSSSource): AppThunk<Promise<void>> {
 
 export function updateFavicon(
     sids?: number[],
-    force = false
+    force = false,
 ): AppThunk<Promise<void>> {
     return async (dispatch, getState) => {
         const initSources = getState().sources
@@ -444,7 +450,7 @@ export function updateFavicon(
 
 export function sourceReducer(
     state: SourceState = {},
-    action: SourceActionTypes | ItemActionTypes
+    action: SourceActionTypes | ItemActionTypes,
 ): SourceState {
     switch (action.type) {
         case INIT_SOURCES:
@@ -485,7 +491,7 @@ export function sourceReducer(
                                 item.source,
                                 updateMap.has(item.source)
                                     ? updateMap.get(item.source) + 1
-                                    : 1
+                                    : 1,
                             )
                         }
                     }

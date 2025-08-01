@@ -78,7 +78,7 @@ export class RSSItem {
             item.thumb = parsed.image
         } else if (parsed.mediaContent) {
             let images = parsed.mediaContent.filter(
-                c => c.$ && c.$.medium === "image" && c.$.url
+                c => c.$ && c.$.medium === "image" && c.$.url,
             )
             if (images.length > 0) item.thumb = images[0].$.url
         }
@@ -87,7 +87,7 @@ export class RSSItem {
             let baseEl = dom.createElement("base")
             baseEl.setAttribute(
                 "href",
-                item.link.split("/").slice(0, 3).join("/")
+                item.link.split("/").slice(0, 3).join("/"),
             )
             dom.head.append(baseEl)
             let img = dom.querySelector("img")
@@ -122,11 +122,13 @@ interface FetchItemsAction {
     itemState?: ItemState
     errSource?: RSSSource
     err?
+    [key: string]: any
 }
 
 interface MarkReadAction {
     type: typeof MARK_READ
     item: RSSItem
+    [key: string]: any
 }
 
 interface MarkAllReadAction {
@@ -134,21 +136,25 @@ interface MarkAllReadAction {
     sids: number[]
     time?: number
     before?: boolean
+    [key: string]: any
 }
 
 interface MarkUnreadAction {
     type: typeof MARK_UNREAD
     item: RSSItem
+    [key: string]: any
 }
 
 interface ToggleStarredAction {
     type: typeof TOGGLE_STARRED
     item: RSSItem
+    [key: string]: any
 }
 
 interface ToggleHiddenAction {
     type: typeof TOGGLE_HIDDEN
     item: RSSItem
+    [key: string]: any
 }
 
 export type ItemActionTypes =
@@ -169,7 +175,7 @@ export function fetchItemsRequest(fetchCount = 0): ItemActionTypes {
 
 export function fetchItemsSuccess(
     items: RSSItem[],
-    itemState: ItemState
+    itemState: ItemState,
 ): ItemActionTypes {
     return {
         type: FETCH_ITEMS,
@@ -207,7 +213,7 @@ export async function insertItems(items: RSSItem[]): Promise<RSSItem[]> {
 
 export function fetchItems(
     background = false,
-    sids: number[] = null
+    sids: number[] = null,
 ): AppThunk<Promise<void>> {
     return async (dispatch, getState) => {
         let promises = new Array<Promise<RSSItem[]>>()
@@ -216,7 +222,7 @@ export function fetchItems(
             if (
                 sids === null ||
                 sids.filter(
-                    sid => initState.sources[sid].serviceRef !== undefined
+                    sid => initState.sources[sid].serviceRef !== undefined,
                 ).length > 0
             )
                 await dispatch(syncWithService(background))
@@ -240,8 +246,8 @@ export function fetchItems(
                 let promise = RSSSource.fetchItems(source)
                 promise.then(() =>
                     dispatch(
-                        updateSource({ ...source, lastFetched: new Date() })
-                    )
+                        updateSource({ ...source, lastFetched: new Date() }),
+                    ),
                 )
                 promise.finally(() => dispatch(fetchItemsIntermediate()))
                 promises.push(promise)
@@ -262,8 +268,8 @@ export function fetchItems(
                         dispatch(
                             fetchItemsSuccess(
                                 inserted.reverse(),
-                                getState().items
-                            )
+                                getState().items,
+                            ),
                         )
                         resolve()
                         if (background) {
@@ -284,7 +290,7 @@ export function fetchItems(
                         dispatch(fetchItemsSuccess([], getState().items))
                         window.utils.showErrorBox(
                             "A database error has occurred.",
-                            String(err)
+                            String(err),
                         )
                         console.log(err)
                         reject(err)
@@ -324,7 +330,7 @@ export function markRead(item: RSSItem): AppThunk {
 export function markAllRead(
     sids: number[] = null,
     date: Date = null,
-    before = true
+    before = true,
 ): AppThunk<Promise<void>> {
     return async (dispatch, getState) => {
         let state = getState()
@@ -335,7 +341,7 @@ export function markAllRead(
         const action = dispatch(getServiceHooks()).markAllRead?.(
             sids,
             date,
-            before
+            before,
         )
         if (action) await dispatch(action)
         const predicates: lf.Predicate[] = [
@@ -344,7 +350,7 @@ export function markAllRead(
         ]
         if (date) {
             predicates.push(
-                before ? db.items.date.lte(date) : db.items.date.gte(date)
+                before ? db.items.date.lte(date) : db.items.date.gte(date),
             )
         }
         const query = lf.op.and.apply(null, predicates)
@@ -477,7 +483,7 @@ export function itemReducer(
         | ItemActionTypes
         | FeedActionTypes
         | ServiceActionTypes
-        | SettingsActionTypes
+        | SettingsActionTypes,
 ): ItemState {
     switch (action.type) {
         case FETCH_ITEMS:
@@ -500,7 +506,7 @@ export function itemReducer(
                 ...state,
                 [action.item._id]: applyItemReduction(
                     state[action.item._id],
-                    action.type
+                    action.type,
                 ),
             }
         }

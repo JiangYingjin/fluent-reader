@@ -38,34 +38,41 @@ interface SelectPageAction {
     sids?: number[]
     menuKey?: string
     title?: string
+    [key: string]: any
 }
 
 interface SwitchViewAction {
     type: typeof SWITCH_VIEW
     viewType: ViewType
+    [key: string]: any
 }
 
 interface SetViewConfigsAction {
     type: typeof SET_VIEW_CONFIGS
     configs: ViewConfigs
+    [key: string]: any
 }
 
 interface ShowItemAction {
     type: typeof SHOW_ITEM
     feedId: string
     item: RSSItem
+    [key: string]: any
 }
 
 interface ApplyFilterAction {
     type: typeof APPLY_FILTER
     filter: FeedFilter
+    [key: string]: any
 }
 
 interface DismissItemAction {
     type: typeof DISMISS_ITEM
+    [key: string]: any
 }
 interface ToggleSearchAction {
     type: typeof TOGGLE_SEARCH
+    [key: string]: any
 }
 
 export type PageActionTypes =
@@ -92,7 +99,7 @@ export function selectAllArticles(init = false): AppThunk {
 export function selectSources(
     sids: number[],
     menuKey: string,
-    title: string
+    title: string,
 ): AppThunk {
     return (dispatch, getState) => {
         if (getState().app.menuKey !== menuKey) {
@@ -165,7 +172,7 @@ export const toggleSearch = (): AppThunk => {
                 applyFilter({
                     ...state.page.filter,
                     search: "",
-                })
+                }),
             )
         }
     }
@@ -184,7 +191,8 @@ export function showOffsetItem(offset: number): AppThunk {
             let item = state.items[itemId]
             let prevs = feed.iids
                 .map(
-                    (id, index) => [state.items[id], index] as [RSSItem, number]
+                    (id, index) =>
+                        [state.items[id], index] as [RSSItem, number],
                 )
                 .filter(([i, _]) => i.date > item.date)
             if (prevs.length > 0) {
@@ -241,7 +249,7 @@ export function switchFilter(filter: FilterType): AppThunk {
                 applyFilter({
                     ...oldFilter,
                     type: newType,
-                })
+                }),
             )
         }
     }
@@ -263,7 +271,7 @@ export function performSearch(query: string): AppThunk {
                 applyFilter({
                     ...state.page.filter,
                     search: query,
-                })
+                }),
             )
         }
     }
@@ -272,7 +280,7 @@ export function performSearch(query: string): AppThunk {
 export class PageState {
     viewType = window.settings.getDefaultView()
     viewConfigs = window.settings.getViewConfigs(
-        window.settings.getDefaultView()
+        window.settings.getDefaultView(),
     )
     filter = new FeedFilter()
     feedId = ALL
@@ -283,7 +291,7 @@ export class PageState {
 
 export function pageReducer(
     state = new PageState(),
-    action: PageActionTypes | SourceActionTypes | FeedActionTypes
+    action: PageActionTypes | SourceActionTypes | FeedActionTypes,
 ): PageState {
     switch (action.type) {
         case SELECT_PAGE:

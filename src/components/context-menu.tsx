@@ -1,6 +1,6 @@
 import * as React from "react"
 import intl from "react-intl-universal"
-import QRCode from "qrcode.react"
+import { QRCodeSVG } from "qrcode.react"
 import {
     cutText,
     webSearch,
@@ -39,7 +39,7 @@ export const shareSubmenu = (item: RSSItem): IContextualMenuItem[] => [
 
 export const renderShareQR = (item: IContextualMenuItem) => (
     <div className="qr-container">
-        <QRCode value={item.url} size={150} renderAs="svg" />
+        <QRCodeSVG value={item.url} size={150} />
     </div>
 )
 
@@ -215,14 +215,14 @@ function ItemContextMenu() {
                                   text: intl.get("context.showCover"),
                                   canCheck: true,
                                   checked: Boolean(
-                                      viewConfigs & ViewConfigs.ShowCover
+                                      viewConfigs & ViewConfigs.ShowCover,
                                   ),
                                   onClick: () =>
                                       dispatch(
                                           setViewConfigs(
                                               viewConfigs ^
-                                                  ViewConfigs.ShowCover
-                                          )
+                                                  ViewConfigs.ShowCover,
+                                          ),
                                       ),
                               },
                               {
@@ -230,14 +230,14 @@ function ItemContextMenu() {
                                   text: intl.get("context.showSnippet"),
                                   canCheck: true,
                                   checked: Boolean(
-                                      viewConfigs & ViewConfigs.ShowSnippet
+                                      viewConfigs & ViewConfigs.ShowSnippet,
                                   ),
                                   onClick: () =>
                                       dispatch(
                                           setViewConfigs(
                                               viewConfigs ^
-                                                  ViewConfigs.ShowSnippet
-                                          )
+                                                  ViewConfigs.ShowSnippet,
+                                          ),
                                       ),
                               },
                               {
@@ -245,13 +245,14 @@ function ItemContextMenu() {
                                   text: intl.get("context.fadeRead"),
                                   canCheck: true,
                                   checked: Boolean(
-                                      viewConfigs & ViewConfigs.FadeRead
+                                      viewConfigs & ViewConfigs.FadeRead,
                                   ),
                                   onClick: () =>
                                       dispatch(
                                           setViewConfigs(
-                                              viewConfigs ^ ViewConfigs.FadeRead
-                                          )
+                                              viewConfigs ^
+                                                  ViewConfigs.FadeRead,
+                                          ),
                                       ),
                               },
                           ],
@@ -266,7 +267,7 @@ function ItemContextMenu() {
 function TextContextMenu() {
     const target = useAppSelector(state => state.app.contextMenu.target) as [
         string,
-        string
+        string,
     ]
     const text = target[0]
     const url = target[1]
@@ -324,7 +325,7 @@ function ImageContextMenu() {
             onClick: e => {
                 if (platformCtrl(e)) {
                     window.utils.imageCallback(
-                        ImageCallbackTypes.OpenExternalBg
+                        ImageCallbackTypes.OpenExternalBg,
                     )
                 } else {
                     window.utils.imageCallback(ImageCallbackTypes.OpenExternal)
@@ -504,7 +505,7 @@ function ViewContextMenu() {
 function GroupContextMenu() {
     const dispatch = useAppDispatch()
     const sids = useAppSelector(
-        state => state.app.contextMenu.target
+        state => state.app.contextMenu.target,
     ) as number[]
 
     const menuItems: IContextualMenuItem[] = [
